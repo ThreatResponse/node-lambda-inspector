@@ -9,7 +9,7 @@ var results = {}
 /**
   * Writes stdout response to the results map
   */
-var call_shell_wrapper = (resname, command, done) => {
+var shell_wrapper = (resname, command, done) => {
   exec(command, (err, stdout, stderr) => {
     results[resname] = stdout;
 
@@ -32,11 +32,35 @@ var contents_of_file = (resname, fname, done) => {
 //individual lookups
 
 var get_pwd = (cb) => {
-  call_shell_wrapper('pwd', 'pwd', cb);
+  shell_wrapper('pwd', 'pwd', cb);
 }
 
 var get_cpuinfo = (cb) => {
   contents_of_file('cpuinfo', '/proc/cpuinfo', cb);
+}
+
+var get_runtime = (cb) => {
+  cb(null, 'nodejs');
+}
+
+var get_etc_issue = (cb) => {
+  contents_of_file('/etc/issue', '/etc/issue', cb);
+}
+
+var get_uname = (cb) => {
+  shell_wrapper('uname', 'uname -a', cb);
+}
+
+var get_df = (cb) => {
+  shell_wrapper('df', 'df -h', cb);
+}
+
+var get_dmesg = (cb) => {
+  shell_wrapper('dmesg', 'dmesg', cb);
+}
+
+var get_processes = (cb) => {
+  shell_wrapper('ps', 'ps aux', cb);
 }
 
 // main map of lookups to functions
@@ -45,7 +69,13 @@ var get_cpuinfo = (cb) => {
 
 var lookups = {
   "pwd":        get_pwd,
-  "cpuinfo":    get_cpuinfo
+  "cpuinfo":    get_cpuinfo,
+  "runtime":    get_runtime,
+  "/etc/issue": get_etc_issue,
+  "uname":      get_uname,
+  "df":         get_df,
+  "dmesg":      get_dmesg,
+  "ps":         get_processes,
 }
 
 // Call every lookup fn in the lookups map
@@ -71,7 +101,7 @@ var do_lookups = (done) => {
 }
 
 module.exports = {
-  call_shell_wrapper: call_shell_wrapper,
+  shell_wrapper: shell_wrapper,
   contents_of_file: contents_of_file,
   results: results,
   lookups: lookups,
