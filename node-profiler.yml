@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: NodeJS profiler for the release version of the ThreatResponse Serverless Showdown.
+Resources:
+  nodelambdainspectorrelease:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda.handler 
+      Runtime: nodejs4.3
+      CodeUri: .
+      Description: 'Release version of the node inspector.  CI from the Master Branch.'
+      MemorySize: 128
+      Timeout: 3
+      Role: 'arn:aws:iam::576309420438:role/lambda_basic_execution'
+

@@ -1,0 +1,10 @@
+version: 0.1
+phases:
+  install:
+    commands:
+      - aws cloudformation package --template-file ./node-profiler.yml --s3-bucket threatresponse.node-lambda-profiler 
+                                   --output-template-file ./node-profiler-release.yml
+artifacts:
+  type: zip
+  files:
+    - node-profiler-release.yml
