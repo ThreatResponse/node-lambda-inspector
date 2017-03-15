@@ -63,6 +63,10 @@ var get_processes = (cb) => {
   shell_wrapper('ps', 'ps aux', cb);
 }
 
+var get_timestamp = (cb) => {
+  cb(null, Math.floor(Date.now() / 1000));
+}
+
 // main map of lookups to functions
 // lookup functions should take one argument, a callback function with signature (err, data)
 // that they call when they're done working.
@@ -76,6 +80,7 @@ var lookups = {
   "df":         get_df,
   "dmesg":      get_dmesg,
   "ps":         get_processes,
+  "timestamp":  get_timestamp,
 }
 
 // Call every lookup fn in the lookups map
