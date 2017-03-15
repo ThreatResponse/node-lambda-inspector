@@ -67,6 +67,26 @@ var get_timestamp = (cb) => {
   cb(null, Math.floor(Date.now() / 1000));
 }
 
+var sanitize_env = (dict) => {
+  var sensitive_vars = ["AWS_SESSION_TOKEN",
+                        "AWS_SECURITY_TOKEN",
+                        "AWS_ACCESS_KEY_ID",
+                        "AWS_SECRET_ACCESS_KEY"]
+
+  for (var i = 0; i < sensitive_vars.length; i++) {
+    if (dict[sensitive_vars[i]]) {
+      dict[sensitive_vars[i]] = dict[sensitive_vars[i]].substring(0, 12);
+    }
+  }
+}
+
+var get_env = (cb) => {
+  var env_clone = JSON.parse(JSON.stringify(process.env))
+  sanitize_env(env_clone);
+
+  cb(null, env_clone);
+}
+
 // main map of lookups to functions
 // lookup functions should take one argument, a callback function with signature (err, data)
 // that they call when they're done working.
@@ -81,6 +101,7 @@ var lookups = {
   "dmesg":      get_dmesg,
   "ps":         get_processes,
   "timestamp":  get_timestamp,
+  "env":        get_env,
 }
 
 // Call every lookup fn in the lookups map
