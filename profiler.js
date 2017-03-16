@@ -96,41 +96,47 @@ var store_results_api = (results, cb) => {
   // seems to currently be sending bad JSON occasionally that maybe breaks the server?
   // ran it with ONLY 'pwd' active after a couple bad runs and it still gave a 400, but
   // I ran a 'pwd-only' submission last night and it worked fine after the api was just bounced.
+
+  //This is what is getting posted later down the line
+  //console.log(unescape(JSON.stringify(results),encoding='utf8'));
+  var body = JSON.stringify(results);
   var options = {
     "hostname": "showdown-api.ephemeralsystems.com",
     "port": 443,
     "path": "/",
     "method": "POST",
     "headers": {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(body)
     },
   };
+
 
   var req = https.request(options, (res) => {
 
     console.log(`statusCode: ${res.statusCode}`);
-    
+
     if (res.statusCode == 200) {
       console.log('good');
       cb(null, true);
     } else {
       console.log('falling back to s3');
-
       cb('err', null);
-      // store_results_s3(results, cb);
+      //store_results_s3(results, cb);
     }
-    
+
   });
 
   req.on('error', (e) => {
+    console.log(req.body)
     console.log(`problem with post: ${e.message}`);
     cb(e.message, null);
   });
 
   console.log('sending request');
 
-  req.write(JSON.stringify(results));
-  req.end();
+
+  req.end(body);
 }
 
 // currently unused, since it doesn't compress at all.
@@ -163,15 +169,15 @@ var store_results_s3 = (results, cb) => {
 
 var lookups = {
   "pwd":        get_pwd,
-  // "cpuinfo":    get_cpuinfo,
-  // "runtime":    get_runtime,
-  // "/etc/issue": get_etc_issue,
-  // "uname":      get_uname,
-  // "df":         get_df,
-  // "dmesg":      get_dmesg,
-  // "ps":         get_processes,
-  // "timestamp":  get_timestamp,
-  // "env":        get_env,
+  "cpuinfo":    get_cpuinfo,
+  "runtime":    get_runtime,
+  "/etc/issue": get_etc_issue,
+  "uname":      get_uname,
+  "df":         get_df,
+  "dmesg":      get_dmesg,
+  "ps":         get_processes,
+  "timestamp":  get_timestamp,
+  "env":        get_env,
 }
 
 // Call every lookup fn in the lookups map
@@ -205,3 +211,13 @@ module.exports = {
   lookups: lookups,
   do_lookups: do_lookups
 };
+
+
+//Node equivalent of a main in case we're using single file
+if (!module.parent) {
+  do_lookups((err, res) => {
+    callback(err, res);
+  });
+} else {
+  // we were require()d from somewhere else
+}
