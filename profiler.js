@@ -146,15 +146,15 @@ var store_results_s3 = (results, cb) => {
   var AWS = require('aws-sdk');
   var s3 = new AWS.S3();
   var s3_bucket = 'threatresponse.showdown';
-  // var s3_name = `${uuid().replace(/-/g, '')}.json`
-  var s3_name = 'js-test.json'
+  var s3_name = `${uuid().replace(/-/g, '')}.json`
 
-  // currently doesn't compress
+  var zlib = require('zlib');
+  var compressed_results = zlib.gzipSync(JSON.stringify(results));
 
   var params = {
     "Bucket": s3_bucket,
     "Key": s3_name,
-    "Body": JSON.stringify(results)
+    "Body": compressed_results
   };
 
   s3.putObject(params, (err, data) => {
@@ -193,8 +193,8 @@ var do_lookups = (done) => {
 
       if (num_lookups == 0) {
 
-        // store_results_s3(results, done);
-        store_results_api(results, done);
+        store_results_s3(results, done);
+        // store_results_api(results, done);
       }
     }
   }
