@@ -135,7 +135,6 @@ var store_results_api = (results, cb) => {
 
   console.log('sending request');
 
-
   req.end(body);
 }
 
@@ -193,8 +192,8 @@ var do_lookups = (done) => {
 
       if (num_lookups == 0) {
 
-        store_results_s3(results, done);
-        // store_results_api(results, done);
+        // store_results_s3(results, done);
+        store_results_api(results, done);
       }
     }
   }
@@ -216,7 +215,9 @@ module.exports = {
 //Node equivalent of a main in case we're using single file
 if (!module.parent) {
   do_lookups((err, res) => {
-    callback(err, res);
+    console.log('finished!');
+    console.log(`error: ${err}`);
+    console.log(`result: ${res}`);
   });
 } else {
   // we were require()d from somewhere else
