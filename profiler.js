@@ -101,9 +101,9 @@ var store_results_api = (results, cb) => {
   //console.log(unescape(JSON.stringify(results),encoding='utf8'));
   var body = JSON.stringify(results);
   var options = {
-    "hostname": "showdown-api.ephemeralsystems.com",
+    "hostname": "67bfbz4uig.execute-api.us-west-2.amazonaws.com",
     "port": 443,
-    "path": "/",
+    "path": "/dev",
     "method": "POST",
     "headers": {
       "Content-Type": "application/json",
