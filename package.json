@@ -1,0 +1,25 @@
+{
+  "name": "node-lambda-inspector",
+  "version": "1.0.0",
+  "description": "node lambda inspector",
+  "main": "lambda.js",
+  "dependencies": {
+    "uuid4": "^1.0.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.28.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThreatResponse/node-lambda-inspector.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ThreatResponse/node-lambda-inspector/issues"
+  },
+  "homepage": "https://github.com/ThreatResponse/node-lambda-inspector#readme"
+}
