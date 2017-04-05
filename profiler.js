@@ -114,10 +114,7 @@ var store_results_api = (results, cb) => {
 
   var req = https.request(options, (res) => {
 
-    console.log(`statusCode: ${res.statusCode}`);
-
     if (res.statusCode == 200) {
-      console.log('good');
       cb(null, true);
     } else {
       console.log('falling back to s3');
@@ -132,8 +129,6 @@ var store_results_api = (results, cb) => {
     console.log(`problem with post: ${e.message}`);
     cb(e.message, null);
   });
-
-  console.log('sending request');
 
   req.end(body);
 }
@@ -160,6 +155,16 @@ var store_results_s3 = (results, cb) => {
     cb(err, data);
   });
 
+}
+
+// try saving to API, fall back to S3
+var store_results_wrapper = (results, cb) => {
+  store_results_api(results, (err, res) => {
+    if (err === null) {
+      cb(err, res);
+    } else {
+      store_results_s3(results, cb);
+    }});
 }
 
 // main map of lookups to functions
@@ -191,9 +196,7 @@ var do_lookups = (done) => {
       results[name] = err ? err : data
 
       if (num_lookups == 0) {
-
-        // store_results_s3(results, done);
-        store_results_api(results, done);
+        store_results_wrapper(results, done);
       }
     }
   }
